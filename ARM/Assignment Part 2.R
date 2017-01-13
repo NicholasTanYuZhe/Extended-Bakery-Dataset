@@ -23,6 +23,7 @@ sparseVector$Food_6 <- lookUpTable$foodNames[match(sparseVector$Food_6, lookUpTa
 sparseVector$Food_7 <- lookUpTable$foodNames[match(sparseVector$Food_7, lookUpTable$foodID)]
 sparseVector$Food_8 <- lookUpTable$foodNames[match(sparseVector$Food_8, lookUpTable$foodID)]
 
+#Change the Receipt_No. to numeric
 itemTable$Receipt_No. <- as.numeric(itemTable$Receipt_No.)
 str(itemTable$Receipt_No.)
 
@@ -35,7 +36,7 @@ inspect(transTable)
 #Start timer
 ptm <- proc.time()
 
-basket_rules <- apriori(transTable, parameter = list(sup = 0.02, conf = 0.75))
+basket_rules <- apriori(transTable, parameter = list(sup = 0.02, conf = 0.80))
 inspect(basket_rules)
 head(basket_rules)
 
@@ -63,4 +64,4 @@ plot(basket_rules)
 plot(basket_rules, method = "grouped", control = list(k = 5))
 plot(basket_rules, method="graph", control=list(type="items"))
 plot(basket_rules, method="paracoord",  control=list(alpha=.5, reorder=TRUE))
-plot(basket_rules,measure=c("support","lift"),shading="confidence", interactive=T)
+plot(basket_rules,measure=c("support","lift"),shading="lift", interactive=T)
