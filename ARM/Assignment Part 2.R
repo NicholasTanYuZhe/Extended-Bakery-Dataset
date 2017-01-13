@@ -23,3 +23,30 @@ sparseVector$Food_6 <- lookUpTable$foodNames[match(sparseVector$Food_6, lookUpTa
 sparseVector$Food_7 <- lookUpTable$foodNames[match(sparseVector$Food_7, lookUpTable$foodID)]
 sparseVector$Food_8 <- lookUpTable$foodNames[match(sparseVector$Food_8, lookUpTable$foodID)]
 
+itemTable$Receipt_No. <- as.numeric(itemTable$Receipt_No.)
+str(itemTable$Receipt_No.)
+
+#install.packages("arules", dependencies = TRUE)
+library(arules)
+transTable <- as(split(itemTable$Food, itemTable$Receipt_No.), "transactions")
+head(transTable)
+inspect(transTable)
+
+basket_rules <- apriori(transTable, parameter = list(sup = 0.02, conf = 0.75))
+inspect(basket_rules)
+head(basket_rules)
+
+basket_rules <- sort(basket_rules, by = "confidence")
+
+quality(basket_rules)$improvement <- interestMeasure(basket_rules, measure = "improvement")
+inspect(basket_rules)
+
+
+
+#install.packages("arulesViz")
+library(arulesViz)
+plot(basket_rules)
+plot(basket_rules, method = "grouped", control = list(k = 5))
+plot(basket_rules, method="graph", control=list(type="items"))
+plot(basket_rules, method="paracoord",  control=list(alpha=.5, reorder=TRUE))
+plot(basket_rules,measure=c("support","lift"),shading="confidence",interactive=T)
