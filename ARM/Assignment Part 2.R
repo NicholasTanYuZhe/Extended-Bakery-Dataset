@@ -41,12 +41,10 @@ basket_rules <- sort(basket_rules, by = "confidence")
 quality(basket_rules)$improvement <- interestMeasure(basket_rules, measure = "improvement")
 inspect(basket_rules)
 
-
-
 #install.packages("arulesViz")
 library(arulesViz)
 plot(basket_rules)
 plot(basket_rules, method = "grouped", control = list(k = 5))
 plot(basket_rules, method="graph", control=list(type="items"))
 plot(basket_rules, method="paracoord",  control=list(alpha=.5, reorder=TRUE))
-plot(basket_rules,measure=c("support","lift"),shading="confidence",interactive=T)
+plot(basket_rules,measure=c("support","lift"),shading="confidence")
