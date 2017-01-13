@@ -32,14 +32,30 @@ transTable <- as(split(itemTable$Food, itemTable$Receipt_No.), "transactions")
 head(transTable)
 inspect(transTable)
 
+#Start timer
+ptm <- proc.time()
+
 basket_rules <- apriori(transTable, parameter = list(sup = 0.02, conf = 0.75))
 inspect(basket_rules)
 head(basket_rules)
 
-basket_rules <- sort(basket_rules, by = "confidence")
+#Sort the rules by confidence
+basket_rules_sorted <- sort(basket_rules, by = "confidence")
+inspect(basket_rules_sorted)
 
-quality(basket_rules)$improvement <- interestMeasure(basket_rules, measure = "improvement")
+#Find redundant rules
+subset_matrix <- is.subset(basket_rules_sorted, basket_rules_sorted)
+subset_matrix[lower.tri(subset_matrix, diag=T)] <- NA
+redundant <- colSums(subset_matrix, na.rm=T) >= 1
+which(redundant)
+
+#Remove redundant rules
+rules_pruned <- basket_rules_sorted[!redundant]
+inspect(rules_pruned)
+basket_rules <- rules_pruned
 inspect(basket_rules)
+
+proc.time() - ptm
 
 #install.packages("arulesViz")
 library(arulesViz)
@@ -47,4 +63,4 @@ plot(basket_rules)
 plot(basket_rules, method = "grouped", control = list(k = 5))
 plot(basket_rules, method="graph", control=list(type="items"))
 plot(basket_rules, method="paracoord",  control=list(alpha=.5, reorder=TRUE))
-plot(basket_rules,measure=c("support","lift"),shading="confidence")
+plot(basket_rules,measure=c("support","lift"),shading="confidence", interactive=T)
