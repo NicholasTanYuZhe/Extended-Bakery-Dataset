@@ -40,6 +40,8 @@ basket_rules <- apriori(transTable, parameter = list(sup = 0.02, conf = 0.80))
 inspect(basket_rules)
 head(basket_rules)
 
+inspect(head(sort(basket_rules, by ="lift"),3))
+
 #Sort the rules by confidence
 basket_rules_sorted <- sort(basket_rules, by = "confidence")
 inspect(basket_rules_sorted)
@@ -64,4 +66,4 @@ plot(basket_rules)
 plot(basket_rules, method = "grouped", control = list(k = 5))
 plot(basket_rules, method="graph", control=list(type="items"))
 plot(basket_rules, method="paracoord",  control=list(alpha=.5, reorder=TRUE))
-plot(basket_rules,measure=c("support","lift"),shading="lift", interactive=T)
+plot(basket_rules,measure=c("support","lift"),shading="confidence", interactive=T)
